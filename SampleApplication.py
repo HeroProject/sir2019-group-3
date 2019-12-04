@@ -4,6 +4,16 @@ import QuestAns as QA
 
 
 class SampleApplication(Base.AbstractApplication):
+    def __init__(self):
+        Base.AbstractApplication.__init__(self)
+        self.name = None
+        self.age = None
+        self.scenario_choice = None
+
+        self.entities = {"answer_name": "name",
+                         "answer_age": "age",
+                         "pick_scenario": "scenario_choice"}
+
     def main(self):
      # Set the correct language (and wait for it to be changed)
         self.langLock = Semaphore(0)
@@ -52,8 +62,14 @@ class SampleApplication(Base.AbstractApplication):
             self.gestureLock.release()
  
     def onAudioIntent(self, *args, intentName):
-        if intentName == 'answer_name' and len(args) > 0:
-            self.name = args[0]
+        """
+        get the input of the user, get the attribute this input should
+        be assigned to, set the attribute
+        """
+        if intentName in self.entities and len(args) > 0:
+            user_input = args[0]
+            attribute = self.entities["answer_name"]
+            setattr(self, attribute, user_input)
             self.nameLock.release()
 
 
