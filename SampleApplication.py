@@ -38,11 +38,12 @@ class SampleApplication(Base.AbstractApplication):
         
         self.a = list(self.Questions.keys())[0]
         self.b = self.Questions[self.a]
-        self.a += 1        
-        
-        print(list(self.Questions.keys()))
         print(self.a)
-        print(random.choice(self.b))
+        #self.a += 1        
+        
+        #print(list(self.Questions.keys()))
+        #print(self.a)
+        #print(random.choice(self.b))
         #print(random.choice(list(self.gestures_dict["listening"])))
         
         
@@ -94,6 +95,7 @@ class SampleApplication(Base.AbstractApplication):
             self.gestureLock.acquire()
             
             self.a += 1
+            print(self.a)
   
     def onRobotEvent(self, event):
         if event == 'LanguageChanged':
