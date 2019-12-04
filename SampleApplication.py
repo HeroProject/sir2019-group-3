@@ -4,23 +4,23 @@ import random
 
 
 class SampleApplication(Base.AbstractApplication):
-    def __init__(self):
-        Base.AbstractApplication.__init__(self)
-        self.name = None
-        self.age = None
-        self.scenario_choice = None
-
-        self.entities = {"answer_name": "name",
-                         "answer_age": "age",
-                         "pick_scenario": "scenario_choice"}
+    # def __init__(self):
+    #     Base.AbstractApplication.__init__(self)
+    #     self.name = None
+    #     self.age = None
+    #     self.scenario_choice = None
+    #
+    #     self.entities = {"answer_name": "name",
+    #                      "answer_age": "age",
+    #                      "pick_scenario": "scenario_choice"}
 
     def main(self):
         
-        
-        print(self.Questions.keys())
-        self.name = None
-        self.age = None
-        self.scenario_choice = None
+        #
+        # print(self.Questions.keys())
+        self.name = ""
+        self.age = ""
+        self.scenario_choice = ""
 
         self.entities = {"answer_name": "name",
                          "answer_age": "age",
@@ -44,7 +44,7 @@ class SampleApplication(Base.AbstractApplication):
         self.Answers = {1:["Nice name!" , self.name + "I like that!"],
            2:["I'm 24", "I'm 24 years old"],
            3:["My day was okay so far. A customer at the grocery shop I work at was being difficult and wanted to speak to the manager, but I managed to solve the problem after all!", "My day was okay so far. I had a presentation for a course of mine. I was really nervous, but people said it went really well! I’m relieved."],
-           4:["Nice! So scenario" + self.scenario_choice + "We will practice that next session", "Great! So scenario" + self.scenario_choice + "I look forward to practicing that next time", "Sounds good! So scenario" + self.scenariochoice + "I can’t wait to practice it with you", "Alright! We will practice scenario" + scenariochoice + "the next session then. I bet you’ll do great"]}
+           4:["Nice! So scenario" + self.scenario_choice + "We will practice that next session", "Great! So scenario" + self.scenario_choice + "I look forward to practicing that next time", "Sounds good! So scenario" + self.scenario_choice + "I can’t wait to practice it with you", "Alright! We will practice scenario" + self.scenario_choice + "the next session then. I bet you’ll do great"]}
         
         
         

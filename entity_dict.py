@@ -15,6 +15,7 @@ class DialogFlowSampleApplication(Base.AbstractApplication):
         self.name = None
         self.age = None
         self.scenario_choice = None
+        self.robot_name =
 
         self.entities = {"answer_name": "name",
                          "answer_age": "age",
