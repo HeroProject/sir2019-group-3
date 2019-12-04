@@ -22,37 +22,16 @@ class SampleApplication(Base.AbstractApplication):
         self.age = ""
         self.scenario_choice = ""
 
-        self.entities = {"answer_name": "name",
-                         "answer_age": "age",
-                         "pick_scenario": "scenario_choice"}
+        self.entities = {"answer_name": "name", "answer_age": "age", "pick_scenario": "scenario_choice"}
 
-        self.context = {1: "answer_name",
-                   2: "answer_age",
-                   3: "story_about_day",
-                   4: "pick_scenario"}
+        self.context = {1: "answer_name", 2: "answer_age", 3: "story_about_day", 4: "pick_scenario"}
 
         self.robot_name = ""
-        self.placating_responses = ["It's okay! Take your time", "Don't worry! Take your time.",
-                                    "Don't worry, you can take your time", "No worries, take as long as you need",
-                                    "Don't worry, take as long as you need", "Don't worry, you're doing great",
-                                    "No worries, you're doing great",
-                                    "I understand you might be feeling anxious, that's okay, take your time"]
+        self.placating_responses = ["It's okay! Take your time", "Don't worry! Take your time.", "Don't worry, you can take your time", "No worries, take as long as you need", "Don't worry, take as long as you need", "Don't worry, you're doing great", "No worries, you're doing great", "I understand you might be feeling anxious, that's okay, take your time"]
 
-        self.Questions = {1: ["Hi, my name is" + self.robot_name + ". What is your name?",
-                              "Hello,  I'm " + self.robot_name + ". How can I call you?"],
-                          2: ["How old are you?", "What age are you?"],
-                          3: ["How are you doing today?", "How are things going?", "How are you feeling?"],
-                          4: "These are the situations we can practice: 1: checking out at a supermarket, 2: meeting new people, 3: ordering food at a restaurant, 4: having a job interview, 5: expressing opinions, 6: inviting others to do something together. Which number would you like to practice?"}
+        self.Questions = {1: ["Hi, my name is" + self.robot_name + ". What is your name?", "Hello,  I'm " + self.robot_name + ". How can I call you?"], 2: ["How old are you?", "What age are you?"], 3: ["How are you doing today?", "How are things going?", "How are you feeling?"], 4: ["These are the situations we can practice: 1: checking out at a supermarket, 2: meeting new people, 3: ordering food at a restaurant, 4: having a job interview, 5: expressing opinions, 6: inviting others to do something together. Which number would you like to practice?"]}
 
-        self.Answers = {1: ["Oh," + self.name + "Nice name!", self.name + "I like that!"],
-                        2: ["I'm 24", "I'm 24 years old"],
-                        3: [
-                            "My day was okay so far. A customer at the grocery shop I work at was being difficult and wanted to speak to the manager, but I managed to solve the problem after all!",
-                            "My day was okay so far. I had a presentation for a course of mine. I was really nervous, but people said it went really well! I’m relieved."],
-                        4: ["Nice! So scenario" + self.scenario_choice + "We will practice that next session",
-                            "Great! So scenario" + self.scenario_choice + "I look forward to practicing that next time",
-                            "Sounds good! So scenario" + self.scenario_choice + "I can’t wait to practice it with you",
-                            "Alright! We will practice scenario" + self.scenario_choice + "the next session then. I bet you’ll do great"]}
+        self.Answers = {1: [f"Oh, {self.name} + Nice name!", self.name + "I like that!"], 2: ["I'm 24", "I'm 24 years old"], 3: ["My day was okay so far. A customer at the grocery shop I work at was being difficult and wanted to speak to the manager, but I managed to solve the problem after all!", "My day was okay so far. I had a presentation for a course of mine. I was really nervous, but people said it went really well! I’m relieved."], 4: ["Nice! So scenario" + self.scenario_choice + "We will practice that next session", "Great! So scenario" + self.scenario_choice + "I look forward to practicing that next time", "Sounds good! So scenario" + self.scenario_choice + "I can’t wait to practice it with you", "Alright! We will practice scenario" + self.scenario_choice + "the next session then. I bet you’ll do great"]}
 
         # Set the correct language (and wait for it to be changed)
         self.langLock = Semaphore(0)
@@ -84,16 +63,22 @@ class SampleApplication(Base.AbstractApplication):
             if not self.name:  # wait one more second after stopListening (if needed)
                 self.nameLock.acquire(timeout=1)
 
-            # say answers
-
             # when you expect an answer
             if question_number == 1:
                 # Respond and wait for that to finish
-                if self.name:
-                    self.sayAnimated(random.choice(self.Answers[1]))
-                else:
+                if not self.name:
                     self.sayAnimated('Sorry, I didn\'t catch your name.')
-            self.speechLock.acquire()
+                    self.speechLock.acquire(timeout=5)
+
+            if question_number == 4:
+                if not self.scenario_choice:
+                        self.sayAnimated('Sorry, what scenario did you want to practice?')
+                        self.speechLock.acquire(timeout=5)
+
+            # say answers
+            answer_options = self.Answers[question_number]
+            answer = random.choice(answer_options)
+            self.sayAnimated(answer)
 
             # # Display a gesture (replace <gestureID> with your gestureID)
             # self.gestureLock = Semaphore(0)
