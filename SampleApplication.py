@@ -40,6 +40,12 @@ class SampleApplication(Base.AbstractApplication):
         self.b = self.Questions[self.a]
         #
         # print(random.choice(self.b))
+        print(self.a)
+        #self.a += 1        
+        
+        #print(list(self.Questions.keys()))
+        #print(self.a)
+        #print(random.choice(self.b))
         #print(random.choice(list(self.gestures_dict["listening"])))
 
         
@@ -49,7 +55,8 @@ class SampleApplication(Base.AbstractApplication):
         self.langLock = Semaphore(0)
         self.setLanguage('en-US')
         self.langLock.acquire()
- 
+
+        
         # Pass the required Dialogflow parameters (add your Dialogflow parameters)
         self.setDialogflowKey('Keyfile.json')
         self.setDialogflowAgent('socially-intelligent-robotics')
@@ -57,8 +64,9 @@ class SampleApplication(Base.AbstractApplication):
         # Make the robot ask the question, and wait until it is done speaking
         #list_key_init =  list(self.Questions.keys)
         #key_init = list_key_init[0]
-        # self.recognise_gender()
-        while (self.Questions.keys):
+
+        self.recognise_gender()
+        while self.Questions.keys:
             
             self.speechLock = Semaphore(0)
             self.sayAnimated(random.choice(self.Questions[self.b]))
@@ -90,6 +98,7 @@ class SampleApplication(Base.AbstractApplication):
             self.gestureLock.acquire()
             
             self.a += 1
+            print(self.a)
   
     def onRobotEvent(self, event):
         if event == 'LanguageChanged':
