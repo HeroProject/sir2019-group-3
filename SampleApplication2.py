@@ -26,10 +26,10 @@ class SampleApplication(Base.AbstractApplication):
                          "answer_age": "age",
                          "pick_scenario": "scenario_choice"}
 
-        self.context = {1: ["name"],
-                   2: ["age"],
-                   3: ["today"],
-                   4: ["situations"]}
+        self.context = {1: "answer_name",
+                   2: "answer_age",
+                   3: "story_about_day",
+                   4: "pick_scenario"}
 
         self.robot_name = ""
         self.placating_responses = ["It's okay! Take your time", "Don't worry! Take your time.",
@@ -44,7 +44,7 @@ class SampleApplication(Base.AbstractApplication):
                           3: ["How are you doing today?", "How are things going?", "How are you feeling?"],
                           4: "These are the situations we can practice: 1: checking out at a supermarket, 2: meeting new people, 3: ordering food at a restaurant, 4: having a job interview, 5: expressing opinions, 6: inviting others to do something together. Which number would you like to practice?"}
 
-        self.Answers = {1: ["Nice name!", self.name + "I like that!"],
+        self.Answers = {1: ["Oh," + self.name + "Nice name!", self.name + "I like that!"],
                         2: ["I'm 24", "I'm 24 years old"],
                         3: [
                             "My day was okay so far. A customer at the grocery shop I work at was being difficult and wanted to speak to the manager, but I managed to solve the problem after all!",
@@ -65,8 +65,8 @@ class SampleApplication(Base.AbstractApplication):
 
         # Make the robot ask the question, and wait until it is done speaking
         question_number = 1
-        while question_number in self.Questions:
-
+        for index in range(len(self.Questions)):
+            print("start of loop")
             self.speechLock = Semaphore(0)
 
             # get list of question phrases
@@ -84,17 +84,25 @@ class SampleApplication(Base.AbstractApplication):
             if not self.name:  # wait one more second after stopListening (if needed)
                 self.nameLock.acquire(timeout=1)
 
-            # Respond and wait for that to finish
-            if self.name:
-                self.sayAnimated('Nice to meet you ' + self.name + '!')
-            else:
-                self.sayAnimated('Sorry, I didn\'t catch your name.')
+            # say answers
+
+            # when you expect an answer
+            if question_number == 1:
+                # Respond and wait for that to finish
+                if self.name:
+                    self.sayAnimated(random.choice(self.Answers[1]))
+                else:
+                    self.sayAnimated('Sorry, I didn\'t catch your name.')
             self.speechLock.acquire()
 
-            # Display a gesture (replace <gestureID> with your gestureID)
-            self.gestureLock = Semaphore(0)
-            self.doGesture('<gestureID>/behavior_1')
-            self.gestureLock.acquire()
+            # # Display a gesture (replace <gestureID> with your gestureID)
+            # self.gestureLock = Semaphore(0)
+            # self.doGesture('<gestureID>/behavior_1')
+            # self.gestureLock.acquire()
+
+            # next question
+            question_number += 1
+            print("end of loop", question_number)
 
     def onRobotEvent(self, event):
         if event == 'LanguageChanged':
