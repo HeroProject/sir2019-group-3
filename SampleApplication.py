@@ -5,8 +5,8 @@ import random
 
 class SampleApplication(Base.AbstractApplication):
     def main(self):
-        
-        
+        repairs_convo = ["I'm sorry, I didn't catch that. Could you repeat that please?", "Sorry, come again?", "Excuse me?", "Pardon me?", "Sorry, could you please repeat that?", "I'm sorry, I didn't understand. Could you repeat that please?", "I'm sorry, I didn't follow you."]
+        gestures_dict = {"listening": ["animations/Stand/BodyTalk/Listening/Listening_2", "animations/Stand/BodyTalk/Listening/ListeningLeft_1", "animations/Stand/BodyTalk/Listening/ListeningLeft_3", "animations/Stand/BodyTalk/Listening/ListeningRight_1", "animations/Stand/BodyTalk/Listening/ListeningRight_3"], "speaking": ["animations/Stand/BodyTalk/Speaking/BodyTalk_1", "animations/Stand/BodyTalk/Speaking/BodyTalk_2", "animations/Stand/BodyTalk/Speaking/BodyTalk_3", "animations/Stand/BodyTalk/Speaking/BodyTalk_4", "animations/Stand/BodyTalk/Speaking/BodyTalk_5", "animations/Stand/BodyTalk/Speaking/BodyTalk_6", "animations/Stand/BodyTalk/Speaking/BodyTalk_7", "animations/Stand/BodyTalk/Speaking/BodyTalk_8", "animations/Stand/BodyTalk/Speaking/BodyTalk_9", "animations/Stand/BodyTalk/Speaking/BodyTalk_10"]}
         self.name = ""
         self.age = ""
         self.scenario_choice = ""
@@ -40,6 +40,7 @@ class SampleApplication(Base.AbstractApplication):
         b = self.Questions[a]
         
         print(random.choice(b))
+        print(random.choice(list(gestures_dict["listening"])))
         
         
         
@@ -54,7 +55,7 @@ class SampleApplication(Base.AbstractApplication):
         self.setDialogflowAgent('socially-intelligent-robotics')
  
         # Make the robot ask the question, and wait until it is done speaking
-        while self.Questions.keys != "":
+        while list(self.Questions.keys)!="":
             list_key_init =  list(self.Questions.keys)
             key_init = list_key_init[0]
             self.speechLock = Semaphore(0)
@@ -73,14 +74,15 @@ class SampleApplication(Base.AbstractApplication):
  
             # Respond and wait for that to finish
             if self.name:
-                self.sayAnimated('Nice to meet you ' + self.name + '!')
+                self.sayAnimated(random.choice(self.Answers[key_init]))
             else:
-                self.sayAnimated('Sorry, I didn\'t catch your name.')
+                self.sayAnimated(random.choice(repairs_convo))
             self.speechLock.acquire()
  
             # Display a gesture (replace <gestureID> with your gestureID)
             self.gestureLock = Semaphore(0)
-            self.doGesture('<gestureID>/behavior_1')
+            self.doGesture(random.choice(list(gestures_dict["listening"])))
+            self.doGesture(random.choice(list(gestures_dict["speaking"])))
             self.gestureLock.acquire()
  
     def onRobotEvent(self, event):
