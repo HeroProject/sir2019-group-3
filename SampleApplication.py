@@ -38,7 +38,10 @@ class SampleApplication(Base.AbstractApplication):
         
         self.a = list(self.Questions.keys())[0]
         self.b = self.Questions[self.a]
+        self.a += 1        
         
+        print(list(self.Questions.keys()))
+        print(self.a)
         print(random.choice(self.b))
         #print(random.choice(list(self.gestures_dict["listening"])))
         
@@ -49,7 +52,8 @@ class SampleApplication(Base.AbstractApplication):
         self.langLock = Semaphore(0)
         self.setLanguage('en-US')
         self.langLock.acquire()
- 
+
+        
         # Pass the required Dialogflow parameters (add your Dialogflow parameters)
         self.setDialogflowKey('Keyfile.json')
         self.setDialogflowAgent('socially-intelligent-robotics')
@@ -58,7 +62,7 @@ class SampleApplication(Base.AbstractApplication):
         #list_key_init =  list(self.Questions.keys)
         #key_init = list_key_init[0]
         self.recognise_gender()
-        while list(self.Questions.keys)!="":
+        while self.Questions.keys:
             
             self.speechLock = Semaphore(0)
             self.sayAnimated(random.choice(self.Questions[self.b]))
