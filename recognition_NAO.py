@@ -12,7 +12,7 @@ def recognise_gender(self):
     gender_client, confidence = self.doGesture('recog_gender')
     self.gestureLock.acquire()
 
-    if gender_client == 0 or gender_client == "Male": #not quite sure how it returns things yet
+    if gender_client == 1 or gender_client == "Male": #not quite sure how it returns things yet
         self.robot_name = "Michael"
     else:
         self.robot_name = "Michelle"
