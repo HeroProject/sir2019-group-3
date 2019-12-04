@@ -36,11 +36,11 @@ class SampleApplication(Base.AbstractApplication):
            4:["Nice! So scenario" + self.scenario_choice + "We will practice that next session", "Great! So scenario" + self.scenario_choice + "I look forward to practicing that next time", "Sounds good! So scenario" + self.scenario_choice + "I can’t wait to practice it with you", "Alright! We will practice scenario" + self.scenario_choice + "the next session then. I bet you’ll do great"]}
         
         
-        #a = list(self.Questions.keys())[0]
-        #b = self.Questions[a]
+        self.a = list(self.Questions.keys())[0]
+        self.b = self.Questions[self.a]
         
-        #print(random.choice(b))
-        #print(random.choice(list(gestures_dict["listening"])))
+        print(random.choice(self.b))
+        #print(random.choice(list(self.gestures_dict["listening"])))
         
         
         
@@ -55,19 +55,19 @@ class SampleApplication(Base.AbstractApplication):
         self.setDialogflowAgent('socially-intelligent-robotics')
  
         # Make the robot ask the question, and wait until it is done speaking
-        list_key_init =  list(self.Questions.keys)
-        key_init = list_key_init[0]
+        #list_key_init =  list(self.Questions.keys)
+        #key_init = list_key_init[0]
         self.recognise_gender()
         while list(self.Questions.keys)!="":
             
             self.speechLock = Semaphore(0)
-            self.sayAnimated(random.choice(self.Questions[key_init]))
+            self.sayAnimated(random.choice(self.Questions[self.b]))
             self.speechLock.acquire()
  
             # Listen for an answer for at most 5 seconds
             self.name = None
             self.nameLock = Semaphore(0)
-            self.setAudioContext(self.context[key_init])
+            self.setAudioContext(self.context[self.b])
             self.startListening()
             self.nameLock.acquire(timeout=5)
             self.stopListening()
@@ -78,7 +78,7 @@ class SampleApplication(Base.AbstractApplication):
             self.recognise_dispair()
             # Respond and wait for that to finish
             if self.name:
-                self.sayAnimated(random.choice(self.Answers[key_init]))
+                self.sayAnimated(random.choice(self.Answers[self.b]))
             else:
                 self.sayAnimated(random.choice(self.repairs_convo))
             self.speechLock.acquire()
@@ -89,7 +89,7 @@ class SampleApplication(Base.AbstractApplication):
             self.doGesture(random.choice(list(self.gestures_dict["speaking"])))
             self.gestureLock.acquire()
             
-            key_init += 1
+            self.a += 1
   
     def onRobotEvent(self, event):
         if event == 'LanguageChanged':
