@@ -5,8 +5,8 @@ import random
 
 class SampleApplication(Base.AbstractApplication):
     def main(self):
-        repairs_convo = ["I'm sorry, I didn't catch that. Could you repeat that please?", "Sorry, come again?", "Excuse me?", "Pardon me?", "Sorry, could you please repeat that?", "I'm sorry, I didn't understand. Could you repeat that please?", "I'm sorry, I didn't follow you."]
-        gestures_dict = {"listening": ["animations/Stand/BodyTalk/Listening/Listening_2", "animations/Stand/BodyTalk/Listening/ListeningLeft_1", "animations/Stand/BodyTalk/Listening/ListeningLeft_3", "animations/Stand/BodyTalk/Listening/ListeningRight_1", "animations/Stand/BodyTalk/Listening/ListeningRight_3"], "speaking": ["animations/Stand/BodyTalk/Speaking/BodyTalk_1", "animations/Stand/BodyTalk/Speaking/BodyTalk_2", "animations/Stand/BodyTalk/Speaking/BodyTalk_3", "animations/Stand/BodyTalk/Speaking/BodyTalk_4", "animations/Stand/BodyTalk/Speaking/BodyTalk_5", "animations/Stand/BodyTalk/Speaking/BodyTalk_6", "animations/Stand/BodyTalk/Speaking/BodyTalk_7", "animations/Stand/BodyTalk/Speaking/BodyTalk_8", "animations/Stand/BodyTalk/Speaking/BodyTalk_9", "animations/Stand/BodyTalk/Speaking/BodyTalk_10"]}
+        self.repairs_convo = ["I'm sorry, I didn't catch that. Could you repeat that please?", "Sorry, come again?", "Excuse me?", "Pardon me?", "Sorry, could you please repeat that?", "I'm sorry, I didn't understand. Could you repeat that please?", "I'm sorry, I didn't follow you."]
+        self.gestures_dict = {"listening": ["animations/Stand/BodyTalk/Listening/Listening_2", "animations/Stand/BodyTalk/Listening/ListeningLeft_1", "animations/Stand/BodyTalk/Listening/ListeningLeft_3", "animations/Stand/BodyTalk/Listening/ListeningRight_1", "animations/Stand/BodyTalk/Listening/ListeningRight_3"], "speaking": ["animations/Stand/BodyTalk/Speaking/BodyTalk_1", "animations/Stand/BodyTalk/Speaking/BodyTalk_2", "animations/Stand/BodyTalk/Speaking/BodyTalk_3", "animations/Stand/BodyTalk/Speaking/BodyTalk_4", "animations/Stand/BodyTalk/Speaking/BodyTalk_5", "animations/Stand/BodyTalk/Speaking/BodyTalk_6", "animations/Stand/BodyTalk/Speaking/BodyTalk_7", "animations/Stand/BodyTalk/Speaking/BodyTalk_8", "animations/Stand/BodyTalk/Speaking/BodyTalk_9", "animations/Stand/BodyTalk/Speaking/BodyTalk_10"]}
         self.name = ""
         self.age = ""
         self.scenario_choice = ""
@@ -15,7 +15,7 @@ class SampleApplication(Base.AbstractApplication):
                          "answer_age": "age",
                          "pick_scenario": "scenario_choice"}
         
-        context = {1:["name"],
+        self.context = {1:["name"],
            2:["age"],
            3:["today"],
            4:["situations"]}
@@ -36,11 +36,11 @@ class SampleApplication(Base.AbstractApplication):
            4:["Nice! So scenario" + self.scenario_choice + "We will practice that next session", "Great! So scenario" + self.scenario_choice + "I look forward to practicing that next time", "Sounds good! So scenario" + self.scenario_choice + "I can’t wait to practice it with you", "Alright! We will practice scenario" + self.scenario_choice + "the next session then. I bet you’ll do great"]}
         
         
-        a = list(self.Questions.keys())[0]
-        b = self.Questions[a]
+        #a = list(self.Questions.keys())[0]
+        #b = self.Questions[a]
         
-        print(random.choice(b))
-        print(random.choice(list(gestures_dict["listening"])))
+        #print(random.choice(b))
+        #print(random.choice(list(gestures_dict["listening"])))
         
         
         
@@ -55,9 +55,10 @@ class SampleApplication(Base.AbstractApplication):
         self.setDialogflowAgent('socially-intelligent-robotics')
  
         # Make the robot ask the question, and wait until it is done speaking
+        list_key_init =  list(self.Questions.keys)
+        key_init = list_key_init[0]
         while list(self.Questions.keys)!="":
-            list_key_init =  list(self.Questions.keys)
-            key_init = list_key_init[0]
+            
             self.speechLock = Semaphore(0)
             self.sayAnimated(random.choice(self.Questions[key_init]))
             self.speechLock.acquire()
@@ -65,7 +66,7 @@ class SampleApplication(Base.AbstractApplication):
             # Listen for an answer for at most 5 seconds
             self.name = None
             self.nameLock = Semaphore(0)
-            self.setAudioContext('answer_name')
+            self.setAudioContext(self.context[key_init])
             self.startListening()
             self.nameLock.acquire(timeout=5)
             self.stopListening()
@@ -76,15 +77,17 @@ class SampleApplication(Base.AbstractApplication):
             if self.name:
                 self.sayAnimated(random.choice(self.Answers[key_init]))
             else:
-                self.sayAnimated(random.choice(repairs_convo))
+                self.sayAnimated(random.choice(self.repairs_convo))
             self.speechLock.acquire()
  
             # Display a gesture (replace <gestureID> with your gestureID)
             self.gestureLock = Semaphore(0)
-            self.doGesture(random.choice(list(gestures_dict["listening"])))
-            self.doGesture(random.choice(list(gestures_dict["speaking"])))
+            self.doGesture(random.choice(list(self.gestures_dict["listening"])))
+            self.doGesture(random.choice(list(self.gestures_dict["speaking"])))
             self.gestureLock.acquire()
- 
+            
+            key_init += 1
+  
     def onRobotEvent(self, event):
         if event == 'LanguageChanged':
             self.langLock.release()
