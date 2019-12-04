@@ -65,7 +65,7 @@ class SampleApplication(Base.AbstractApplication):
         #list_key_init =  list(self.Questions.keys)
         #key_init = list_key_init[0]
 
-        self.recognise_gender()
+        # self.recognise_gender()
         while self.Questions.keys:
             
             self.speechLock = Semaphore(0)
