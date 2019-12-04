@@ -57,6 +57,7 @@ class SampleApplication(Base.AbstractApplication):
         # Make the robot ask the question, and wait until it is done speaking
         list_key_init =  list(self.Questions.keys)
         key_init = list_key_init[0]
+        self.recognise_gender()
         while list(self.Questions.keys)!="":
             
             self.speechLock = Semaphore(0)
@@ -72,7 +73,9 @@ class SampleApplication(Base.AbstractApplication):
             self.stopListening()
             if not self.name:  # wait one more second after stopListening (if needed)
                 self.nameLock.acquire(timeout=1)
- 
+
+            
+            self.recognise_dispair()
             # Respond and wait for that to finish
             if self.name:
                 self.sayAnimated(random.choice(self.Answers[key_init]))
