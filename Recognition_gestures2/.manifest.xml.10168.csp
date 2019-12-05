@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<package version="0.0.0" uuid="recognition_gestures2-6d7a66">
+ <names>
+  <name lang="en_US">gesture</name>
+ </names>
+ <descriptionLanguages>
+  <language>en_US</language>
+ </descriptionLanguages>
+ <contents>
+  <behaviorContent path="NAO_choregraphe_new/recog_emo">
+   <nature>interactive</nature>
+   <permissions/>
+  </behaviorContent>
+  <behaviorContent path="NAO_choregraphe_new/recog_sex">
+   <nature>interactive</nature>
+   <permissions/>
+  </behaviorContent>
+ </contents>
+</package>

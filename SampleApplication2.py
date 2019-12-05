@@ -46,7 +46,7 @@ class SampleApplication(Base.AbstractApplication):
 
         # Make the robot ask the question, and wait until it is done speaking
         question_number = 1
-        self.recognise_gender()
+        # self.recognise_gender()
         for index in range(len(self.Questions)):
             print("start of loop")
             self.speechLock = Semaphore(0)
@@ -116,7 +116,8 @@ class SampleApplication(Base.AbstractApplication):
 
     def recognise_gender(self):
         self.gestureLock = Semaphore(0)
-        gender_client, confidence = self.doGesture('recog_gender')
+        gender_client, confidence = self.doGesture('Recognition_gestures2/NAO_choregraphe_new/recog_sex')
+        print(gender_client)
         self.gestureLock.acquire()
 
         if gender_client == 1 or gender_client == "Male":  # not quite sure how it returns things yet
@@ -131,7 +132,7 @@ class SampleApplication(Base.AbstractApplication):
 
     def recognise_dispair(self):
         self.gestureLock = Semaphore(0)
-        emotion, confidence = self.doGesture('recog_emo')
+        emotion, confidence = self.doGesture('Recognition_gestures2/NAO_choregraphe_new/recog_emo')
         self.gestureLock.acquire()
 
         if emotion == "Sad" or emotion == "Angry" or emotion == "Surprised":  # might have to change if it uses the detection criteria
