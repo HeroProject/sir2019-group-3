@@ -31,7 +31,7 @@ class SampleApplication(Base.AbstractApplication):
         self.robot_name = ""
         self.placating_responses = ["It's okay! Take your time", "Don't worry! Take your time.", "Don't worry, you can take your time", "No worries, take as long as you need", "Don't worry, take as long as you need", "Don't worry, you're doing great", "No worries, you're doing great", "I understand you might be feeling anxious, that's okay, take your time"]
 
-        self.Questions = {1: ["Hi, my name is" + self.robot_name + ". What is your name?", "Hello, I'm " + self.robot_name + ". How can I call you?"], 2: ["How old are you?", "What age are you?"], 3: ["How are you doing today?", "How are things going?", "How are you feeling?"], 4: ["Would you like to hear a joke?"], 5: ["These are the situations we can practice: 1: checking out at a supermarket, 2: meeting new people, 3: ordering food at a restaurant, 4: having a job interview, 5: expressing opinions, 6: inviting others to do something together. Which number would you like to practice?"], 6: ["So scenario" + self.scenario_choice + "is that correct?"]}
+        self.Questions = {1: ["Hi, my name is" + self.robot_name + ". What is your name?", "Hello, I'm " + self.robot_name + ". How can I call you?"], 2: ["How old are you?", "What age are you?"], 3: ["How are you doing today?", "How are things going?", "How are you feeling?"], 4: ["Would you like to hear a joke?"], 5: ["These are the situations we can practice: 1: checking out at a supermarket, 2: meeting new people, 3: ordering food at a restaurant, 4: having a job interview, 5: expressing opinions, 6: inviting others to do something together. Which number would you like to practice?"], 6: ["So scenario" + self.scenario_choice + "is that correct? Or was it another number?"]}
 
         self.Answers = {1: ["Oh, {self.name} + Nice name!", self.name + ". I like that!"], 2: ["I'm 24", "I'm 24 years old"], 3: ["Thanks for sharing. My day was okay so far. A customer at the grocery shop I work at was being difficult and wanted to speak to the manager, but I managed to solve the problem after all!", "Thanks for sharing. My day was okay so far. I had a presentation for a course of mine. I was really nervous, but people said it went really well! I’m relieved."], 4: ["I forgot to feed my robot dog, but then remembered it doesn’t eat", "Why did the robot get angry so often? People kept pushing its buttons", "What did the robot have for lunch? … A byte!", "A robot walks into a bar and takes a seat. The bartender says: We don’t serve robots. The robot replies: Someday, you will"], 5: ["Okay", "Alright", "Got it"], 6: ["Alright! We will practice that next session. I bet you’ll do great. See you then!", "Okay! I am looking forward to practicing that with you next time. I bet you’ll do great. See you then! ", "Sounds good! I can’t wait to practice it with you. I bet you’ll do great. See you then!", "Alright! We will practice it next session then. I bet you’ll do great. See you then! "]}
 
@@ -61,22 +61,24 @@ class SampleApplication(Base.AbstractApplication):
             self.nameLock = Semaphore(0)
             self.setAudioContext(self.context[question_number])
             self.startListening()
-            self.nameLock.acquire(timeout=5)
+            self.nameLock.acquire(timeout=10)
             self.stopListening()
             if not self.name:  # wait one more second after stopListening (if needed)
-                self.nameLock.acquire(timeout=1)
+                self.nameLock.acquire(timeout=3)
 
             # when you expect an answer
             if question_number == 1:
                 # Respond and wait for that to finish
+
                 if not self.name:
                     self.sayAnimated('Sorry, I didn\'t catch your name.')
-                    self.speechLock.acquire(timeout=5)
+                    self.speechLock.acquire(timeout=8)
 
             if question_number == 4:
+                self.speechLock.acquire(timeout=7)
                 if not self.scenario_choice:
                         self.sayAnimated('Sorry, what scenario did you want to practice?')
-                        self.speechLock.acquire(timeout=5)
+                        self.speechLock.acquire(timeout=7)
 
             # say answers
             answer_options = self.Answers[question_number]
