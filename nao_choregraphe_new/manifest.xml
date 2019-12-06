@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<package uuid="nao_choregraphe-80e416" version="0.0.0">
+<package version="0.0.0" uuid="nao_choregraphe-80e416">
  <names>
   <name lang="en_US">recog_emotion</name>
  </names>
@@ -9,7 +9,6 @@
  <contents>
   <behaviorContent path="recog_sex">
    <nature>interactive</nature>
-   <autonomous/>
    <permissions/>
   </behaviorContent>
   <behaviorContent path="recog_emo">
