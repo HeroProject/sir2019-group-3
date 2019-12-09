@@ -13,6 +13,22 @@ class Question(object):
         self._answer = answer
         self.listen_timeout = listen_timeout
         self.needs_answer = needs_answer
+        self.gestures_dict = {"listening": ["animations/Stand/BodyTalk/Listening/Listening_2",
+                                          "animations/Stand/BodyTalk/Listening/ListeningLeft_1",
+                                          "animations/Stand/BodyTalk/Listening/ListeningLeft_3",
+                                          "animations/Stand/BodyTalk/Listening/ListeningRight_1",
+                                          "animations/Stand/BodyTalk/Listening/ListeningRight_3"],
+                              "speaking": ["animations/Stand/BodyTalk/Speaking/BodyTalk_1",
+                                         "animations/Stand/BodyTalk/Speaking/BodyTalk_2",
+                                         "animations/Stand/BodyTalk/Speaking/BodyTalk_3",
+                                         "animations/Stand/BodyTalk/Speaking/BodyTalk_4",
+                                         "animations/Stand/BodyTalk/Speaking/BodyTalk_5",
+                                         "animations/Stand/BodyTalk/Speaking/BodyTalk_6",
+                                         "animations/Stand/BodyTalk/Speaking/BodyTalk_7",
+                                         "animations/Stand/BodyTalk/Speaking/BodyTalk_8",
+                                         "animations/Stand/BodyTalk/Speaking/BodyTalk_9",
+                                         "animations/Stand/BodyTalk/Speaking/BodyTalk_10"]
+}
 
     def question(self):
         if isinstance(self._question, list):
@@ -33,7 +49,7 @@ class DialogFlowSampleApplication(Base.AbstractApplication):
             'name': None,
             'age': None,
             'scenario_choice': '',
-            'answer_joke': '',
+            'Confirmation': None,
             'confirm_scenario': '',
         }
         self.questions = [
@@ -54,6 +70,20 @@ class DialogFlowSampleApplication(Base.AbstractApplication):
                      ["How are you doing today?", "How are things going?", "How are you feeling?"],
                      "Thanks for sharing. My day was okay so far. A customer at the grocery shop I work at was being difficult and wanted to speak to the manager, but I managed to solve the problem after all!",
                      listen_timeout=5, needs_answer=False,
+                     ),
+            Question("answer_joke", "Confirmation",
+                     ["Would you like to hear a joke?"],
+                     ["A robot walks into a bar and takes a seat. The bartender says: We don’t serve robots. The robot replies: Someday, you will.",
+                      "I forgot to feed my robot dog, but then remembered it doesn’t eat",
+                      "Why did the robot get angry so often? People kept pushing its buttons.",
+                      "What did the robot have for lunch? A byte",
+                      "What is a robot’s favourite music? Heavy metal"],
+                     listen_timeout=5, needs_answer=True,
+                     ),
+            Question("choose_scenario", "scenario_choice",
+                     ["These are the situations we can practice: 1: checking out at a supermarket, 2: meeting new people, 3: ordering food at a restaurant, 4: having a job interview. Which number would you like to practice?"],
+                     ["Alright! We will practice that next session. I bet you’ll do great. See you then!", "Okay! I am looking forward to practicing that with you next time. I bet you’ll do great. See you then! ", "Sounds good! I can’t wait to practice it with you. I bet you’ll do great. See you then!", "Alright! We will practice it next session then. I bet you’ll do great. See you then! "],
+                     listen_timeout=5, needs_answer=True,
                      )
         ]
 
@@ -81,8 +111,17 @@ class DialogFlowSampleApplication(Base.AbstractApplication):
             # 2: The amount of attempts to get an answer...
             for attempt in range(2):
                 print(f"  [-] asking question (attempt {attempt+1})")
+
+                gesture = random.choice(question.gestures_dict['speaking'])
+                self.doGesture(gesture)
+                print(f"  [-] doing gesture {gesture}")
                 self._speak(question.question())
                 self.setAudioContext(question.context)
+
+                gesture = random.choice(question.gestures_dict['listening'])
+                self.doGesture(gesture)
+                print(f"  [-] doing gesture {gesture}")
+
                 self.startListening()
                 self.locks['input'].acquire(timeout=question.listen_timeout)
                 self.stopListening()
