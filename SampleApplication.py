@@ -127,35 +127,30 @@ class DialogFlowSampleApplication(Base.AbstractApplication):
     def main(self):
         
         """
-         main method - The method implements the language setting.
+         main method - The method implements the language setting.It also initializes the Keyfile(json) for the 
+         Dialogflow and also the project id for the dialogflow. The method focuses on the implementation of the 
+         questions and it's flow of questions and answers in a loop. The gestures implementation is 
+         also appended separately for listening and speaking as well after the question is picked.
+         Incase of no inputs or answers, an exception case is defined in the else case of the method
         """
         
-        
+        #implements the language setting
         print("[+] setting language")
         self.setLanguage('en-US')
         self.locks['lang'].acquire()
         print("[+] language set")
 
-        """
-        It also initializes the Keyfile(json) for the 
-         Dialogflow and also the project id for the dialogflow. 
-        """
-        
+       
+        #initializes the Keyfile(json) for the Dialogflow and also the project id for the dialogflow
         self.setDialogflowKey('Keyfile.json')
         self.setDialogflowAgent('socially-intelligent-robotics')
 
-        """
-        The method focuses on the implementation of the 
-         questions and it's flow of questions and answers in a loop. The gestures implementation is 
-         also appended separately for listening and speaking as well after the question is picked.
-         Incase of no inputs or answers, an exception case is defined in the else case of the method
-        
-         """
-
+        #implementation of the questions and it's flow of questions and answers in a loop
         for i, question in enumerate(self.questions):
             print(f"[+] begin question {i+1}")
             time.sleep(0.5)
-
+            
+            #the for loop implements the choice of questions,gestures and inputs(by the user).
             for attempt in range(2):
                 print(f"  [-] asking question (attempt {attempt+1})")
 
@@ -173,16 +168,19 @@ class DialogFlowSampleApplication(Base.AbstractApplication):
                 self.locks['input'].acquire(timeout=question.listen_timeout)
                 self.stopListening()
 
+                #checks the condition if the question entity is null or not and acquires the input by the user
                 if question.entity is not None and self.state[question.entity] is None:
                     self.locks['input'].acquire(timeout=1)
-
+                
+                #checks the conditon if the answer is needed for the question or question is not null, then returns if True or breaks if False
                 if not question.needs_answer or self.state[question.entity] is not None:
                     print("  [-] question answer accepted")
                     break
 
                 print("  [-] question answer rejected")
                 self._speak('Sorry I didn\'t quite catch that')
-
+                
+            #checks the conditon if the question needs an answer or question entity is not null, then returns the answer, else alternative answer is obtained in the else case.  
             if not question.needs_answer or self.state[question.entity] is not None:
                 data = ''
                 if question.entity is not None:
