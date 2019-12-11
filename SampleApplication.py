@@ -62,7 +62,7 @@ class Question(object):
         return self._answer
 
 
-class DialogFlowSampleApplication(Base.AbstractApplication):
+class IntroductoryDialogue(Base.AbstractApplication):
     
     def __init__(self):
         
@@ -230,6 +230,6 @@ class DialogFlowSampleApplication(Base.AbstractApplication):
 
 
 
-sample = DialogFlowSampleApplication()
+sample = IntroductoryDialogue()
 sample.main()
 sample.stop()
