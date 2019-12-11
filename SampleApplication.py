@@ -6,13 +6,17 @@ import time
 
 class Question(object):
 
-
-
-    
     def __init__(self, context, entity, question, answer, listen_timeout=5, needs_answer=True):
         """ 
-            A constructor is implemented which stores and reads all the data variables dependent to rest
-            of the methods present in the Question Class.    
+        Parameters : 
+            self.context (str) : context of the conversation
+            self.entity (str) : entity for the intents
+            self._question (str) : questions of the robot to be asked.
+            self._answer (str) : answers which are responded to the patient/human
+            self._listen_timeout (int) : time counter for listening by the robot.
+            self.needs_answer (bool) : a boolean variable which is set to true or false depending on whether an answer is needed for a particular question
+            self.gestures_dict (dict) =  a dictionary with keys listening and speaking with corresponsing gestures as values.
+          
         """
         
         self.context = context
@@ -38,10 +42,6 @@ class Question(object):
                                          "animations/Stand/BodyTalk/Speaking/BodyTalk_10"]
 }
 
-
-
-
-
     def question(self):
         
         """
@@ -51,9 +51,6 @@ class Question(object):
         if isinstance(self._question, list):
             return random.choice(self._question)
         return self._question
-
-
-
 
     def answer(self):
         """
@@ -65,16 +62,15 @@ class Question(object):
         return self._answer
 
 
-
-
-
 class DialogFlowSampleApplication(Base.AbstractApplication):
-    
     
     def __init__(self):
         
         """
-        A constructor method for the DialogFlowSampleApplication Class that stores the data variables.
+        self.state (dict): Keys are the general information or data by the patient/user, values are set according
+        to the user input.
+        self.questions (List) : List of questions. listen_timeout and needs_answer are other two values that is required for the robot to understand the user input corresponding to the question.
+        self.locks (dict) : Sets the language, speech and input as keys to values as Semaphores(0) 
         """
         
         super().__init__()
@@ -128,19 +124,10 @@ class DialogFlowSampleApplication(Base.AbstractApplication):
             'input': Semaphore(0),
         }
 
-    
-    
-    
-    
     def main(self):
         
         """
-         main method - The method implements the language setting. It also initializes the Keyfile(json) for the 
-         Dialogflow and also the project id for the dialogflow. The method focuses on the implementation of the 
-         questions and it's flow of questions and answers in a loop. The gestures implementation is 
-         also appended separately for listening and speaking as well after the question is picked. Incase of 
-         no inputs or answers, an exception case is defined in the else case of the method
-        
+         main method - The method implements the language setting.
         """
         
         
@@ -149,8 +136,21 @@ class DialogFlowSampleApplication(Base.AbstractApplication):
         self.locks['lang'].acquire()
         print("[+] language set")
 
+        """
+        It also initializes the Keyfile(json) for the 
+         Dialogflow and also the project id for the dialogflow. 
+        """
+        
         self.setDialogflowKey('Keyfile.json')
         self.setDialogflowAgent('socially-intelligent-robotics')
+
+        """
+        The method focuses on the implementation of the 
+         questions and it's flow of questions and answers in a loop. The gestures implementation is 
+         also appended separately for listening and speaking as well after the question is picked.
+         Incase of no inputs or answers, an exception case is defined in the else case of the method
+        
+         """
 
         for i, question in enumerate(self.questions):
             print(f"[+] begin question {i+1}")
@@ -204,8 +204,8 @@ class DialogFlowSampleApplication(Base.AbstractApplication):
 
     def onRobotEvent(self, event):
         """
-        onRobotEvent method locks or returns the event of the robot depending such as language of the robot 
-        changes and it is an event which helps the robot to change the language.
+        onRobotEvent implements the event parameter based on the selection of the event and triggers 
+        which event to be locked accordingly.
     
         """
         
