@@ -6,7 +6,15 @@ import time
 
 class Question(object):
 
+
+
+    
     def __init__(self, context, entity, question, answer, listen_timeout=5, needs_answer=True):
+        """ 
+            A constructor is implemented which stores and reads all the data variables dependent to rest
+            of the methods present in the Question Class.    
+        """
+        
         self.context = context
         self.entity = entity
         self._question = question
@@ -30,19 +38,45 @@ class Question(object):
                                          "animations/Stand/BodyTalk/Speaking/BodyTalk_10"]
 }
 
+
+
+
+
     def question(self):
+        
+        """
+            The Question method - Returns the random question based on the context of the conversation.   
+        """
+        
         if isinstance(self._question, list):
             return random.choice(self._question)
         return self._question
 
+
+
+
     def answer(self):
+        """
+        The Answer Method - Returns a random answer based on the context of the conversation.
+        
+        """
         if isinstance(self._answer, list):
             return random.choice(self._answer)
         return self._answer
 
 
+
+
+
 class DialogFlowSampleApplication(Base.AbstractApplication):
+    
+    
     def __init__(self):
+        
+        """
+        A constructor method for the DialogFlowSampleApplication Class that stores the data variables.
+        """
+        
         super().__init__()
 
         self.state = {
@@ -51,6 +85,7 @@ class DialogFlowSampleApplication(Base.AbstractApplication):
             'scenario_choice': '',
             'Confirmation': None,
             'confirm_scenario': '',
+    
         }
         self.questions = [
             Question("answer_name", "name",
@@ -93,14 +128,27 @@ class DialogFlowSampleApplication(Base.AbstractApplication):
             'input': Semaphore(0),
         }
 
+    
+    
+    
+    
     def main(self):
-        # Set the correct language (and wait for it to be changed)
+        
+        """
+         main method - The method implements the language setting. It also initializes the Keyfile(json) for the 
+         Dialogflow and also the project id for the dialogflow. The method focuses on the implementation of the 
+         questions and it's flow of questions and answers in a loop. The gestures implementation is 
+         also appended separately for listening and speaking as well after the question is picked. Incase of 
+         no inputs or answers, an exception case is defined in the else case of the method
+        
+        """
+        
+        
         print("[+] setting language")
         self.setLanguage('en-US')
         self.locks['lang'].acquire()
         print("[+] language set")
 
-        # Pass the required Dialogflow parameters (add your Dialogflow parameters)
         self.setDialogflowKey('Keyfile.json')
         self.setDialogflowAgent('socially-intelligent-robotics')
 
@@ -108,7 +156,6 @@ class DialogFlowSampleApplication(Base.AbstractApplication):
             print(f"[+] begin question {i+1}")
             time.sleep(0.5)
 
-            # 2: The amount of attempts to get an answer...
             for attempt in range(2):
                 print(f"  [-] asking question (attempt {attempt+1})")
 
@@ -134,7 +181,6 @@ class DialogFlowSampleApplication(Base.AbstractApplication):
                     break
 
                 print("  [-] question answer rejected")
-                # At this point, we didnt hear things... lets retry
                 self._speak('Sorry I didn\'t quite catch that')
 
             if not question.needs_answer or self.state[question.entity] is not None:
@@ -147,24 +193,34 @@ class DialogFlowSampleApplication(Base.AbstractApplication):
                 print("[-] this question is one of life's biggest mysteries")
                 self._speak('Im a sad robot i didnt hear any answers')
 
-        # Display a gesture (replace <gestureID> with your gestureID)
-        # self.gestureLock = Semaphore(0)
-        # self.doGesture('<gestureID>/behavior_1')
-        # self.gestureLock.acquire()
 
     def _speak(self, text):
+        
+        """
+        _speak method returns implementation of the robot to speak the required information
+        """
         self.sayAnimated(text)
         self.locks['speech'].acquire()
 
     def onRobotEvent(self, event):
+        """
+        onRobotEvent method locks or returns the event of the robot depending such as language of the robot 
+        changes and it is an event which helps the robot to change the language.
+    
+        """
+        
         if event == 'LanguageChanged':
             self.locks['lang'].release()
         elif event == 'TextDone':
             self.locks['speech'].release()
-        # elif event == 'GestureDone':
-        #     self.gestureLock.release()
 
     def onAudioIntent(self, *args, intentName):
+        
+        """
+        onAudioIntent method implements to retrieve the audio from the intent context and check whether the data
+        is present or not and give an output accordingly.
+        """
+        
         print(f"[+] Got intent {intentName}: {args}")
         for q in self.questions:
             if intentName == q.context and len(args) > 0:
@@ -174,7 +230,8 @@ class DialogFlowSampleApplication(Base.AbstractApplication):
                 break
 
 
-# Run the application
+
+
 sample = DialogFlowSampleApplication()
 sample.main()
 sample.stop()
