@@ -217,8 +217,8 @@ class DialogFlowSampleApplication(Base.AbstractApplication):
     def onAudioIntent(self, *args, intentName):
         
         """
-        onAudioIntent method implements to retrieve the audio from the intent context and check whether the data
-        is present or not and give an output accordingly.
+        get the input of the user, get the attribute this input should
+        be assigned to, set the attribute
         """
         
         print(f"[+] Got intent {intentName}: {args}")
